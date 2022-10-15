@@ -1,9 +1,15 @@
 let express = require('express')
 let routes = require('./routes')
+let cors = require('cors')
 const app = express()
 const port = 8080
 
+
+app.use(cors())
 app.use(express.json())
+
+app.use(express.static('uploads'))
+
 app.use("/", routes)
 
 app.post("/samplepost", (req,res)=>{
