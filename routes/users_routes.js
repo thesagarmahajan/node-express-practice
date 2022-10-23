@@ -1,7 +1,7 @@
 let user = require('express').Router()
 let mysql = require('mysql')
 let multipart = require('connect-multiparty')
-const  multipartMiddleware  =  multipart({ uploadDir:  process.cwd()+'/uploads' });
+const multipartMiddleware  =  multipart({ uploadDir:  process.cwd()+'/uploads' });
 
 let con = mysql.createConnection({
     host:"localhost",
@@ -52,9 +52,9 @@ user.put("/uploadavatar/:id", multipartMiddleware, (req, res)=>{
     
     let path = req.files.avatar.path;
     let splitted = path.split("\\") 
+    console.log(path)
     let filename = "uploads/"+splitted[splitted.length-1]
-
-
+    
     con.query(`UPDATE users SET avatar='${filename}' WHERE id=${req.params.id}`, (err, rows, fields)=>{
         err ? res.send("SOME ERROR") : res.send("FILE UPLOADED SUCCESSFULLY")
     })
