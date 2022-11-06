@@ -1,21 +1,39 @@
 let user = require('express').Router()
-let mysql = require('mysql')
+let mysql = require('mysql2')
+require("dotenv").config()
+
 let multipart = require('connect-multiparty')
 const multipartMiddleware  =  multipart({ uploadDir:  process.cwd()+'/uploads' });
-
-let con = mysql.createConnection({
-    host:"localhost",
-    user:"root",
-    password:"123123",
-    database:"node_express"
+console.log({
+    host:process.env.DB_HOST,
+    user:process.env.DB_USER,
+    password:process.env.DB_PASSWORD,
+    database:process.env.DB_NAME
+})
+// let con = mysql.createConnection({
+//     host:process.env.DB_HOST,
+//     user:process.env.DB_USER,
+//     password:process.env.DB_PASSWORD,
+//     database:process.env.DB_NAME
+// })
+let con = mysql.createPool({
+    host:process.env.DB_HOST,
+    user:process.env.DB_USER,
+    password:process.env.DB_PASSWORD,
+    database:process.env.DB_NAME
 })
 
-con.connect((err)=>{
-    err ? console.log(err) : console.log("Connection Successful")
+con.getConnection((err, connection)=>{
+    err?console.log(err):console.log(connection)
 })
+
+// con.connect((err)=>{
+//     err ? console.log(err) : console.log("Connection Successful")
+// })
 // MySQL CRUD
 
 user.get("/all", (req, res)=>{
+    
     con.query("SELECT * FROM users", (err, rows, fields)=>{
         res.send(rows)
     })
@@ -38,7 +56,7 @@ user.post("/new", (req,res)=>{
 user.put("/update", (req,res)=>{
     let ud = req.body
     con.query(`UPDATE users SET name='${ud.name}', email='${ud.email}', phone='${ud.phone}', password='${ud.password}'WHERE id=${ud.id}`, (err, rows, fields)=>{
-        err ? res.send("SOME ERROR") : res.send("ONE ROW UPDATED")
+        err ? res.status(500).json({"error":err}) : res.status(200).json({"success":"ONE_USER_UPDATED"})
     })
 })
 

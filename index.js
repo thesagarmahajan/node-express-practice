@@ -2,8 +2,9 @@ let express = require('express')
 let routes = require('./routes')
 let cors = require('cors')
 const app = express()
-const port = 8080
+require("dotenv").config()
 
+const port = process.env.NODE_DOCKER_PORT
 
 app.use(cors())
 app.use(express.json())
@@ -18,7 +19,7 @@ app.post("/samplepost", (req,res)=>{
 })
 
 app.get("/", (req, res)=>{
-    res.send("This is home page")
+    res.send("This is home page!!!")
 })
 
 app.get("/about", (req, res)=>{
