@@ -1,36 +1,22 @@
 let user = require('express').Router()
 let mysql = require('mysql2')
-require("dotenv").config()
 
 let multipart = require('connect-multiparty')
 const multipartMiddleware  =  multipart({ uploadDir:  process.cwd()+'/uploads' });
-console.log({
-    host:process.env.DB_HOST,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.DB_NAME
-})
-// let con = mysql.createConnection({
-//     host:process.env.DB_HOST,
-//     user:process.env.DB_USER,
-//     password:process.env.DB_PASSWORD,
-//     database:process.env.DB_NAME
-// })
-let con = mysql.createPool({
-    host:process.env.DB_HOST,
-    user:process.env.DB_USER,
-    password:process.env.DB_PASSWORD,
-    database:process.env.DB_NAME
+
+
+let con = mysql.createConnection({
+    host:"localhost",
+    user:"root",
+    password:"123123",
+    database:"node_express"
 })
 
-con.getConnection((err, connection)=>{
-    err?console.log(err):console.log(connection)
+con.connect((err)=>{
+    err ? console.log(err) : console.log("Connection Successful")
 })
 
-// con.connect((err)=>{
-//     err ? console.log(err) : console.log("Connection Successful")
-// })
-// MySQL CRUD
+
 
 user.get("/all", (req, res)=>{
     
@@ -69,6 +55,7 @@ user.delete("/delete/:id", (req,res)=>{
 user.put("/uploadavatar/:id", multipartMiddleware, (req, res)=>{
     
     let path = req.files.avatar.path;
+    console.log(path)
     let splitted = path.split("\\") 
     console.log(path)
     let filename = "uploads/"+splitted[splitted.length-1]
