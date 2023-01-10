@@ -4,7 +4,7 @@ let cors = require('cors')
 const app = express()
 require("dotenv").config()
 
-const port = process.env.NODE_DOCKER_PORT
+const port = 8080
 
 app.use(cors())
 app.use(express.json())
